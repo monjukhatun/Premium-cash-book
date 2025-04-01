@@ -1,0 +1,2733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialCRM - Customer Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1877f2;
+            --secondary: #42b72a;
+            --accent: #ff6b6b;
+            --dark: #1c1e21;
+            --light: #f0f2f5;
+            --white: #ffffff;
+            --gray: #65676b;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 0.8rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .logo i {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .search-bar {
+            display: none;
+            flex-grow: 0.4;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            border: none;
+            background-color: var(--light);
+            font-size: 0.9rem;
+        }
+        
+        .nav-icons {
+            display: none;
+            gap: 1rem;
+        }
+        
+        .nav-icons i {
+            font-size: 1.2rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-icons i:hover {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .user-profile img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .user-profile span {
+            display: none;
+        }
+        
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: block;
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        
+        /* Mobile menu */
+        .mobile-menu {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background-color: var(--white);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 99;
+            display: none;
+            flex-direction: column;
+            max-height: calc(100vh - 60px);
+            overflow-y: auto;
+        }
+        
+        .mobile-menu.active {
+            display: flex;
+        }
+        
+        .mobile-menu-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .mobile-menu-item:hover {
+            background-color: var(--light);
+        }
+        
+        .mobile-menu-item i {
+            color: var(--primary);
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .mobile-menu-item.active {
+            background-color: #e7f3ff;
+            border-left: 3px solid var(--primary);
+        }
+        
+        /* Main Content */
+        .main-container {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: none;
+            width: 250px;
+            background-color: var(--white);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 60px;
+            z-index: 99;
+            flex-direction: column;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+        
+        .sidebar.active {
+            display: flex;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            margin: 0.2rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+        
+        .sidebar-item:hover {
+            background-color: var(--light);
+        }
+        
+        .sidebar-item.active {
+            background-color: #e7f3ff;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .sidebar-item i {
+            font-size: 1.2rem;
+            margin-right: 1rem;
+            color: var(--primary);
+        }
+        
+        .sidebar-item span {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        
+        .sidebar-divider {
+            height: 1px;
+            background-color: #ddd;
+            margin: 1rem 1.5rem;
+        }
+        
+        .sidebar-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.8rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Main Content Area */
+        .content {
+            flex: 1;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .content-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .content-header h2 {
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+        
+        .btn {
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .btn i {
+            font-size: 0.8rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #166fe5;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #36a420;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #e05555;
+            transform: translateY(-2px);
+        }
+        
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        
+        .card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card.show:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            position: relative;
+        }
+        
+        .card-avatar {
+            position: absolute;
+            bottom: -30px;
+            left: 15px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid var(--white);
+            background-color: var(--white);
+            overflow: hidden;
+        }
+        
+        .card-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .card-body {
+            padding: 40px 15px 15px;
+        }
+        
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-subtitle {
+            color: var(--gray);
+            font-size: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-bottom: 0.8rem;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .card-actions .btn {
+            flex: 1;
+            padding: 0.4rem;
+            font-size: 0.7rem;
+        }
+        
+        /* Activity Feed */
+        .activity-feed {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 1rem;
+        }
+        
+        .activity-item {
+            display: flex;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 0.8rem;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .activity-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+        }
+        
+        .activity-user {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .activity-time {
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+        
+        .activity-text {
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .activity-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+        
+        .activity-actions span {
+            font-size: 0.7rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .activity-actions span:hover {
+            color: var(--primary);
+        }
+        
+        /* Form Styles */
+        .form-container {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.2);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+        
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .data-table th {
+            background-color: #f5f6f7;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--gray);
+        }
+        
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .data-table tr:hover td {
+            background-color: #f8f9fa;
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 0.3rem;
+        }
+        
+        .table-actions .btn {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+        }
+        
+        /* Transaction Status */
+        .status-pending {
+            color: #f39c12;
+            background-color: #fef5e7;
+            padding: 0.2rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .status-completed {
+            color: #27ae60;
+            background-color: #e8f8f0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .status-failed {
+            color: #e74c3c;
+            background-color: #fdedec;
+            padding: 0.2rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.2rem;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 1rem;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .modal-header .close {
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .modal-body {
+            padding: 1.2rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .empty-state i {
+            font-size: 2.5rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-state p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 576px) {
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .content-header {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+            
+            .form-container {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .mobile-menu-toggle {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: none !important;
+            }
+            
+            .search-bar {
+                display: block;
+                margin: 0 1rem;
+            }
+            
+            .nav-icons {
+                display: flex;
+            }
+            
+            .user-profile span {
+                display: inline;
+            }
+            
+            .main-container {
+                flex-direction: row;
+            }
+            
+            .sidebar {
+                display: flex;
+            }
+            
+            .content {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .sidebar {
+                width: 250px;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode header,
+        body.dark-mode .sidebar,
+        body.dark-mode .card,
+        body.dark-mode .activity-feed,
+        body.dark-mode .form-container,
+        body.dark-mode .data-table,
+        body.dark-mode .mobile-menu {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .sidebar-item:hover,
+        body.dark-mode .card:hover,
+        body.dark-mode .data-table tr:hover td,
+        body.dark-mode .mobile-menu-item:hover {
+            background-color: #2d2d2d;
+        }
+        
+        body.dark-mode .sidebar-item.active,
+        body.dark-mode .mobile-menu-item.active {
+            background-color: #2a3a4a;
+        }
+        
+        body.dark-mode .search-bar input,
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group select,
+        body.dark-mode .form-group textarea {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+        
+        body.dark-mode .activity-item,
+        body.dark-mode .data-table th,
+        body.dark-mode .data-table td,
+        body.dark-mode .mobile-menu-item {
+            border-bottom-color: #333;
+        }
+        
+        body.dark-mode .data-table th {
+            background-color: #252525;
+        }
+        
+        body.dark-mode .card-subtitle,
+        body.dark-mode .card-meta,
+        body.dark-mode .activity-time,
+        body.dark-mode .activity-actions span {
+            color: #aaa;
+        }
+        
+        body.dark-mode .modal-content,
+        body.dark-mode .modal-header,
+        body.dark-mode .modal-footer {
+            background-color: #1e1e1e;
+            border-color: #333;
+        }
+        
+        body.dark-mode .empty-state {
+            background-color: #1e1e1e;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="logo" id="logo">
+            <i class="fab fa-facebook"></i>
+            <h1>SocialCRM</h1>
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Search customers, messages..." id="searchInput">
+        </div>
+        
+        <div class="nav-icons">
+            <i class="fas fa-home" id="navDashboard"></i>
+            <i class="fas fa-users" id="navCustomers"></i>
+            <i class="fas fa-exchange-alt" id="navTransactions"></i>
+            <i class="fas fa-history" id="navHistory"></i>
+            <i class="fas fa-comment-dots" id="navMessages"></i>
+        </div>
+        
+        <div class="user-profile" id="userProfile">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Profile">
+            <span>Admin</span>
+        </div>
+    </header>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-item active" data-page="dashboard">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </div>
+        
+        <div class="mobile-menu-item" data-page="customers">
+            <i class="fas fa-user-friends"></i>
+            <span>Customers</span>
+        </div>
+        
+        <div class="mobile-menu-item" data-page="transactions">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Transactions</span>
+        </div>
+        
+        <div class="mobile-menu-item" data-page="history">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </div>
+        
+        <div class="mobile-menu-item" data-page="messages">
+            <i class="fas fa-comments"></i>
+            <span>Messages</span>
+        </div>
+        
+        <div class="mobile-menu-item" data-page="add-customer">
+            <i class="fas fa-user-plus"></i>
+            <span>Add Customer</span>
+        </div>
+        
+        <div class="mobile-menu-item" data-page="add-transaction">
+            <i class="fas fa-plus-circle"></i>
+            <span>Add Transaction</span>
+        </div>
+        
+        <div class="mobile-menu-item" data-page="settings">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-item active" data-page="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+            
+            <div class="sidebar-item" data-page="customers">
+                <i class="fas fa-user-friends"></i>
+                <span>Customers</span>
+            </div>
+            
+            <div class="sidebar-item" data-page="transactions">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Transactions</span>
+            </div>
+            
+            <div class="sidebar-item" data-page="history">
+                <i class="fas fa-history"></i>
+                <span>History</span>
+            </div>
+            
+            <div class="sidebar-item" data-page="messages">
+                <i class="fas fa-comments"></i>
+                <span>Messages</span>
+            </div>
+            
+            <div class="sidebar-divider"></div>
+            
+            <div class="sidebar-title">Management</div>
+            
+            <div class="sidebar-item" data-page="add-customer">
+                <i class="fas fa-user-plus"></i>
+                <span>Add Customer</span>
+            </div>
+            
+            <div class="sidebar-item" data-page="add-transaction">
+                <i class="fas fa-plus-circle"></i>
+                <span>Add Transaction</span>
+            </div>
+            
+            <div class="sidebar-divider"></div>
+            
+            <div class="sidebar-title">Settings</div>
+            
+            <div class="sidebar-item" data-page="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+        </aside>
+        
+        <main class="content" id="content">
+            <!-- Dashboard Content -->
+            <div class="page-content" id="dashboard-page">
+                <div class="content-header">
+                    <h2>Dashboard</h2>
+                    <div>
+                        <button class="btn btn-secondary" id="addCustomerBtn">
+                            <i class="fas fa-plus"></i> Add Customer
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="cards-grid" id="customersGrid">
+                    <!-- Customer cards will be dynamically inserted here -->
+                </div>
+                
+                <div class="activity-feed" id="recentActivity">
+                    <h3>Recent Activity</h3>
+                    <!-- Activity items will be dynamically inserted here -->
+                </div>
+            </div>
+            
+            <!-- Customers List Page -->
+            <div class="page-content" id="customers-page" style="display: none;">
+                <div class="content-header">
+                    <h2>Customers</h2>
+                    <div>
+                        <button class="btn btn-secondary" id="addCustomerBtn2">
+                            <i class="fas fa-plus"></i> Add Customer
+                        </button>
+                    </div>
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTable">
+                        <!-- Customers will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Transactions Page -->
+            <div class="page-content" id="transactions-page" style="display: none;">
+                <div class="content-header">
+                    <h2>Transactions</h2>
+                    <div>
+                        <button class="btn btn-secondary" id="addTransactionBtn">
+                            <i class="fas fa-plus"></i> Add Transaction
+                        </button>
+                    </div>
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTable">
+                        <!-- Transactions will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- History Page -->
+            <div class="page-content" id="history-page" style="display: none;">
+                <div class="content-header">
+                    <h2>Customer History</h2>
+                </div>
+                
+                <div id="historyContent">
+                    <!-- History will be dynamically inserted here -->
+                </div>
+            </div>
+            
+            <!-- Add Customer Page -->
+            <div class="page-content" id="add-customer-page" style="display: none;">
+                <div class="content-header">
+                    <h2>Add New Customer</h2>
+                </div>
+                
+                <div class="form-container">
+                    <form id="customerForm">
+                        <div class="form-group">
+                            <label for="customerName">Full Name</label>
+                            <input type="text" id="customerName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="customerEmail">Email</label>
+                            <input type="email" id="customerEmail" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="customerPhone">Phone</label>
+                            <input type="tel" id="customerPhone" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="customerAddress">Address</label>
+                            <input type="text" id="customerAddress">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="customerType">Customer Type</label>
+                            <select id="customerType" required>
+                                <option value="">Select Type</option>
+                                <option value="Regular">Regular</option>
+                                <option value="Premium">Premium</option>
+                                <option value="VIP">VIP</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="customerAvatar">Avatar URL</label>
+                            <input type="url" id="customerAvatar" placeholder="https://example.com/avatar.jpg">
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-danger" id="cancelCustomerBtn">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Customer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Add Transaction Page -->
+            <div class="page-content" id="add-transaction-page" style="display: none;">
+                <div class="content-header">
+                    <h2>Add New Transaction</h2>
+                </div>
+                
+                <div class="form-container">
+                    <form id="transactionForm">
+                        <div class="form-group">
+                            <label for="transactionCustomer">Customer</label>
+                            <select id="transactionCustomer" required>
+                                <option value="">Select Customer</option>
+                                <!-- Customers will be dynamically inserted here -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="transactionAmount">Amount</label>
+                            <input type="number" id="transactionAmount" step="0.01" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="transactionDate">Date</label>
+                            <input type="date" id="transactionDate" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="transactionStatus">Status</label>
+                            <select id="transactionStatus" required>
+                                <option value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Failed">Failed</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="transactionDetails">Details</label>
+                            <textarea id="transactionDetails" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-danger" id="cancelTransactionBtn">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Transaction</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Settings Page -->
+            <div class="page-content" id="settings-page" style="display: none;">
+                <div class="content-header">
+                    <h2>Settings</h2>
+                </div>
+                
+                <div class="form-container">
+                    <div class="form-group">
+                        <label>Dark Mode</label>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <label class="switch">
+                                <input type="checkbox" id="darkModeToggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span>Enable Dark Mode</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Data Management</label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1rem;">
+                            <button class="btn btn-danger" id="clearDataBtn">
+                                <i class="fas fa-trash"></i> Clear All Data
+                            </button>
+                            <button class="btn btn-secondary" id="exportDataBtn">
+                                <i class="fas fa-download"></i> Export Data
+                            </button>
+                            <button class="btn btn-primary" id="importDataBtn">
+                                <i class="fas fa-upload"></i> Import Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal for Edit Customer -->
+    <div class="modal" id="editCustomerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Customer</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editCustomerForm">
+                    <input type="hidden" id="editCustomerId">
+                    <div class="form-group">
+                        <label for="editCustomerName">Full Name</label>
+                        <input type="text" id="editCustomerName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editCustomerEmail">Email</label>
+                        <input type="email" id="editCustomerEmail" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editCustomerPhone">Phone</label>
+                        <input type="tel" id="editCustomerPhone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editCustomerAddress">Address</label>
+                        <input type="text" id="editCustomerAddress">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editCustomerType">Customer Type</label>
+                        <select id="editCustomerType" required>
+                            <option value="Regular">Regular</option>
+                            <option value="Premium">Premium</option>
+                            <option value="VIP">VIP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editCustomerAvatar">Avatar URL</label>
+                        <input type="url" id="editCustomerAvatar" placeholder="https://example.com/avatar.jpg">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="deleteCustomerBtn">Delete</button>
+                <button class="btn btn-primary" id="saveCustomerChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Edit Transaction -->
+    <div class="modal" id="editTransactionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Transaction</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editTransactionForm">
+                    <input type="hidden" id="editTransactionId">
+                    <div class="form-group">
+                        <label for="editTransactionCustomer">Customer</label>
+                        <select id="editTransactionCustomer" required>
+                            <!-- Customers will be dynamically inserted here -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editTransactionAmount">Amount</label>
+                        <input type="number" id="editTransactionAmount" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editTransactionDate">Date</label>
+                        <input type="date" id="editTransactionDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editTransactionStatus">Status</label>
+                        <select id="editTransactionStatus" required>
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Failed">Failed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editTransactionDetails">Details</label>
+                        <textarea id="editTransactionDetails" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="deleteTransactionBtn">Delete</button>
+                <button class="btn btn-primary" id="saveTransactionChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for View History -->
+    <div class="modal" id="viewHistoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Customer History</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="historyModalContent">
+                <!-- History content will be dynamically inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="closeHistoryModalBtn">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Import Data -->
+    <div class="modal" id="importDataModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Import Data</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="importFile">Select JSON File</label>
+                    <input type="file" id="importFile" accept=".json">
+                </div>
+                <div id="importStatus" style="margin-top: 1rem;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="cancelImportBtn">Cancel</button>
+                <button class="btn btn-primary" id="confirmImportBtn">Import</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dark-mode-toggle" id="darkModeToggleBtn">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <script>
+        // Data Structure
+        let appData = {
+            customers: [],
+            transactions: [],
+            activities: [],
+            settings: {
+                darkMode: false
+            }
+        };
+        
+        // DOM Elements
+        const elements = {
+            // Pages
+            pages: {
+                dashboard: document.getElementById('dashboard-page'),
+                customers: document.getElementById('customers-page'),
+                transactions: document.getElementById('transactions-page'),
+                history: document.getElementById('history-page'),
+                addCustomer: document.getElementById('add-customer-page'),
+                addTransaction: document.getElementById('add-transaction-page'),
+                settings: document.getElementById('settings-page')
+            },
+            
+            // Sidebar and Mobile Menu
+            sidebar: document.getElementById('sidebar'),
+            sidebarItems: document.querySelectorAll('.sidebar-item'),
+            mobileMenu: document.getElementById('mobileMenu'),
+            mobileMenuItems: document.querySelectorAll('.mobile-menu-item'),
+            mobileMenuToggle: document.getElementById('mobileMenuToggle'),
+            
+            // Dashboard
+            customersGrid: document.getElementById('customersGrid'),
+            recentActivity: document.getElementById('recentActivity'),
+            
+            // Customers
+            customersTable: document.getElementById('customersTable'),
+            
+            // Transactions
+            transactionsTable: document.getElementById('transactionsTable'),
+            
+            // History
+            historyContent: document.getElementById('historyContent'),
+            
+            // Forms
+            customerForm: document.getElementById('customerForm'),
+            transactionForm: document.getElementById('transactionForm'),
+            editCustomerForm: document.getElementById('editCustomerForm'),
+            editTransactionForm: document.getElementById('editTransactionForm'),
+            
+            // Form fields
+            customerName: document.getElementById('customerName'),
+            customerEmail: document.getElementById('customerEmail'),
+            customerPhone: document.getElementById('customerPhone'),
+            customerAddress: document.getElementById('customerAddress'),
+            customerType: document.getElementById('customerType'),
+            customerAvatar: document.getElementById('customerAvatar'),
+            
+            transactionCustomer: document.getElementById('transactionCustomer'),
+            transactionAmount: document.getElementById('transactionAmount'),
+            transactionDate: document.getElementById('transactionDate'),
+            transactionStatus: document.getElementById('transactionStatus'),
+            transactionDetails: document.getElementById('transactionDetails'),
+            
+            // Buttons
+            addCustomerBtn: document.getElementById('addCustomerBtn'),
+            addCustomerBtn2: document.getElementById('addCustomerBtn2'),
+            addTransactionBtn: document.getElementById('addTransactionBtn'),
+            cancelCustomerBtn: document.getElementById('cancelCustomerBtn'),
+            cancelTransactionBtn: document.getElementById('cancelTransactionBtn'),
+            saveCustomerChangesBtn: document.getElementById('saveCustomerChangesBtn'),
+            saveTransactionChangesBtn: document.getElementById('saveTransactionChangesBtn'),
+            deleteCustomerBtn: document.getElementById('deleteCustomerBtn'),
+            deleteTransactionBtn: document.getElementById('deleteTransactionBtn'),
+            closeHistoryModalBtn: document.getElementById('closeHistoryModalBtn'),
+            clearDataBtn: document.getElementById('clearDataBtn'),
+            exportDataBtn: document.getElementById('exportDataBtn'),
+            importDataBtn: document.getElementById('importDataBtn'),
+            cancelImportBtn: document.getElementById('cancelImportBtn'),
+            confirmImportBtn: document.getElementById('confirmImportBtn'),
+            
+            // Modals
+            editCustomerModal: document.getElementById('editCustomerModal'),
+            editTransactionModal: document.getElementById('editTransactionModal'),
+            viewHistoryModal: document.getElementById('viewHistoryModal'),
+            importDataModal: document.getElementById('importDataModal'),
+            
+            // Modal close buttons
+            modalCloseButtons: document.querySelectorAll('.close'),
+            
+            // Dark mode toggle
+            darkModeToggle: document.getElementById('darkModeToggleBtn'),
+            darkModeCheckbox: document.getElementById('darkModeToggle'),
+            
+            // Other
+            logo: document.getElementById('logo'),
+            searchInput: document.getElementById('searchInput'),
+            userProfile: document.getElementById('userProfile'),
+            navDashboard: document.getElementById('navDashboard'),
+            navCustomers: document.getElementById('navCustomers'),
+            navTransactions: document.getElementById('navTransactions'),
+            navHistory: document.getElementById('navHistory'),
+            navMessages: document.getElementById('navMessages')
+        };
+        
+        // Current state
+        let currentState = {
+            editingCustomerId: null,
+            editingTransactionId: null,
+            viewingCustomerId: null,
+            mobileMenuOpen: false,
+            currentPage: 'dashboard'
+        };
+        
+        // Initialize the app
+        function initApp() {
+            loadData();
+            setupEventListeners();
+            renderDashboard();
+            checkDarkMode();
+            setupResponsiveBehavior();
+        }
+        
+        // Setup responsive behavior
+        function setupResponsiveBehavior() {
+            function handleResize() {
+                if (window.innerWidth >= 768) {
+                    // Desktop view
+                    elements.sidebar.style.display = 'flex';
+                    elements.mobileMenu.style.display = 'none';
+                    currentState.mobileMenuOpen = false;
+                    elements.mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                    
+                    // Show nav icons and search bar
+                    elements.searchBar.style.display = 'block';
+                    elements.navIcons.style.display = 'flex';
+                    elements.userProfileSpan.style.display = 'inline';
+                } else {
+                    // Mobile view
+                    elements.sidebar.style.display = 'none';
+                    
+                    // Hide nav icons and search bar
+                    elements.searchBar.style.display = 'none';
+                    elements.navIcons.style.display = 'none';
+                    elements.userProfileSpan.style.display = 'none';
+                }
+            }
+            
+            window.addEventListener('resize', handleResize);
+            handleResize(); // Initial check
+        }
+        
+        // Load data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('socialCRMData');
+            if (savedData) {
+                appData = JSON.parse(savedData);
+                
+                // If no activities, generate some sample ones
+                if (appData.activities.length === 0 && appData.customers.length > 0) {
+                    generateSampleActivities();
+                }
+            } else {
+                // Sample data for first-time users
+                generateSampleData();
+            }
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('socialCRMData', JSON.stringify(appData));
+        }
+        
+        // Generate sample data for first-time users
+        function generateSampleData() {
+            const sampleCustomers = [
+                {
+                    id: generateId(),
+                    name: "Michael Johnson",
+                    email: "michael@example.com",
+                    phone: "0123456789",
+                    address: "123 Main St, New York",
+                    type: "Premium",
+                    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+                    joinDate: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: "Emily Rodriguez",
+                    email: "emily@example.com",
+                    phone: "9876543210",
+                    address: "456 Oak Ave, Los Angeles",
+                    type: "Regular",
+                    avatar: "https://randomuser.me/api/portraits/women/28.jpg",
+                    joinDate: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: "David Kim",
+                    email: "david@example.com",
+                    phone: "5551234567",
+                    address: "789 Pine Rd, Chicago",
+                    type: "VIP",
+                    avatar: "https://randomuser.me/api/portraits/men/75.jpg",
+                    joinDate: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: "Sophia Chen",
+                    email: "sophia@example.com",
+                    phone: "3334445555",
+                    address: "321 Elm Blvd, San Francisco",
+                    type: "Premium",
+                    avatar: "https://randomuser.me/api/portraits/women/63.jpg",
+                    joinDate: new Date().toISOString()
+                }
+            ];
+            
+            const sampleTransactions = [
+                {
+                    id: generateId(),
+                    customerId: sampleCustomers[0].id,
+                    amount: 245.00,
+                    date: new Date(Date.now() - 86400000 * 2).toISOString(),
+                    status: "Completed",
+                    details: "Order #4582 - 3 items"
+                },
+                {
+                    id: generateId(),
+                    customerId: sampleCustomers[1].id,
+                    amount: 120.50,
+                    date: new Date(Date.now() - 86400000 * 5).toISOString(),
+                    status: "Pending",
+                    details: "Order #4583 - 2 items"
+                },
+                {
+                    id: generateId(),
+                    customerId: sampleCustomers[2].id,
+                    amount: 89.99,
+                    date: new Date(Date.now() - 86400000 * 7).toISOString(),
+                    status: "Failed",
+                    details: "Order #4584 - Payment declined"
+                },
+                {
+                    id: generateId(),
+                    customerId: sampleCustomers[3].id,
+                    amount: 320.75,
+                    date: new Date(Date.now() - 86400000).toISOString(),
+                    status: "Completed",
+                    details: "Order #4585 - 5 items"
+                }
+            ];
+            
+            appData.customers = sampleCustomers;
+            appData.transactions = sampleTransactions;
+            generateSampleActivities();
+            saveData();
+        }
+        
+        // Generate sample activities
+        function generateSampleActivities() {
+            const activities = [];
+            
+            appData.customers.forEach(customer => {
+                activities.push({
+                    id: generateId(),
+                    customerId: customer.id,
+                    type: "new_customer",
+                    message: `${customer.name} joined as a ${customer.type} customer`,
+                    date: customer.joinDate
+                });
+            });
+            
+            appData.transactions.forEach(transaction => {
+                const customer = appData.customers.find(c => c.id === transaction.customerId);
+                if (customer) {
+                    activities.push({
+                        id: generateId(),
+                        customerId: customer.id,
+                        type: "new_transaction",
+                        message: `${customer.name} made a ${transaction.status.toLowerCase()} transaction of $${transaction.amount.toFixed(2)}`,
+                        date: transaction.date
+                    });
+                }
+            });
+            
+            // Add some random activities
+            const activityTypes = [
+                "left_review",
+                "contacted_support",
+                "updated_profile",
+                "referred_friend"
+            ];
+            
+            const messages = [
+                "left a 5-star review",
+                "contacted customer support",
+                "updated their profile information",
+                "referred a friend"
+            ];
+            
+            for (let i = 0; i < 5; i++) {
+                const randomCustomer = appData.customers[Math.floor(Math.random() * appData.customers.length)];
+                const randomType = activityTypes[Math.floor(Math.random() * activityTypes.length)];
+                const randomMessage = messages[activityTypes.indexOf(randomType)];
+                
+                activities.push({
+                    id: generateId(),
+                    customerId: randomCustomer.id,
+                    type: randomType,
+                    message: `${randomCustomer.name} ${randomMessage}`,
+                    date: new Date(Date.now() - Math.floor(Math.random() * 86400000 * 30)).toISOString()
+                });
+            }
+            
+            // Sort activities by date (newest first)
+            appData.activities = activities.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+        
+        // Generate a unique ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Mobile menu toggle
+            elements.mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+            
+            // Sidebar navigation
+            elements.sidebarItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.getAttribute('data-page');
+                    navigateTo(page);
+                    updateActiveMenuItem(page);
+                });
+            });
+            
+            // Mobile menu navigation
+            elements.mobileMenuItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.getAttribute('data-page');
+                    navigateTo(page);
+                    updateActiveMenuItem(page);
+                    toggleMobileMenu(); // Close menu after selection
+                });
+            });
+            
+            // Nav icons
+            elements.navDashboard.addEventListener('click', () => {
+                navigateTo('dashboard');
+                updateActiveMenuItem('dashboard');
+            });
+            
+            elements.navCustomers.addEventListener('click', () => {
+                navigateTo('customers');
+                updateActiveMenuItem('customers');
+            });
+            
+            elements.navTransactions.addEventListener('click', () => {
+                navigateTo('transactions');
+                updateActiveMenuItem('transactions');
+            });
+            
+            elements.navHistory.addEventListener('click', () => {
+                navigateTo('history');
+                updateActiveMenuItem('history');
+            });
+            
+            elements.navMessages.addEventListener('click', () => {
+                navigateTo('messages');
+                updateActiveMenuItem('messages');
+            });
+            
+            // Logo click
+            elements.logo.addEventListener('click', () => {
+                navigateTo('dashboard');
+                updateActiveMenuItem('dashboard');
+            });
+            
+            // Add customer buttons
+            elements.addCustomerBtn.addEventListener('click', () => {
+                navigateTo('add-customer');
+                updateActiveMenuItem('add-customer');
+            });
+            
+            elements.addCustomerBtn2.addEventListener('click', () => {
+                navigateTo('add-customer');
+                updateActiveMenuItem('add-customer');
+            });
+            
+            // Add transaction button
+            elements.addTransactionBtn.addEventListener('click', () => {
+                navigateTo('add-transaction');
+                updateActiveMenuItem('add-transaction');
+            });
+            
+            // Form submissions
+            elements.customerForm.addEventListener('submit', handleAddCustomer);
+            elements.transactionForm.addEventListener('submit', handleAddTransaction);
+            
+            // Cancel buttons
+            elements.cancelCustomerBtn.addEventListener('click', () => {
+                navigateTo('customers');
+                updateActiveMenuItem('customers');
+            });
+            
+            elements.cancelTransactionBtn.addEventListener('click', () => {
+                navigateTo('transactions');
+                updateActiveMenuItem('transactions');
+            });
+            
+            // Modal close buttons
+            elements.modalCloseButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.classList.remove('active');
+                    });
+                });
+            });
+            
+            // Edit/Save customer
+            elements.saveCustomerChangesBtn.addEventListener('click', handleSaveCustomerChanges);
+            elements.deleteCustomerBtn.addEventListener('click', handleDeleteCustomer);
+            
+            // Edit/Save transaction
+            elements.saveTransactionChangesBtn.addEventListener('click', handleSaveTransactionChanges);
+            elements.deleteTransactionBtn.addEventListener('click', handleDeleteTransaction);
+            
+            // History modal close
+            elements.closeHistoryModalBtn.addEventListener('click', () => {
+                elements.viewHistoryModal.classList.remove('active');
+            });
+            
+            // Dark mode toggle
+            elements.darkModeToggle.addEventListener('click', toggleDarkMode);
+            elements.darkModeCheckbox.addEventListener('change', toggleDarkMode);
+            
+            // Data management
+            elements.clearDataBtn.addEventListener('click', confirmClearData);
+            elements.exportDataBtn.addEventListener('click', exportData);
+            elements.importDataBtn.addEventListener('click', () => {
+                elements.importDataModal.classList.add('active');
+            });
+            
+            elements.cancelImportBtn.addEventListener('click', () => {
+                elements.importDataModal.classList.remove('active');
+            });
+            
+            elements.confirmImportBtn.addEventListener('click', importData);
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.classList.remove('active');
+                    });
+                }
+            });
+            
+            // Search functionality
+            elements.searchInput.addEventListener('input', handleSearch);
+        }
+        
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            currentState.mobileMenuOpen = !currentState.mobileMenuOpen;
+            if (currentState.mobileMenuOpen) {
+                elements.mobileMenu.style.display = 'flex';
+                elements.mobileMenuToggle.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                elements.mobileMenu.style.display = 'none';
+                elements.mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        }
+        
+        // Update active menu item
+        function updateActiveMenuItem(page) {
+            // Update sidebar items
+            elements.sidebarItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-page') === page) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Update mobile menu items
+            elements.mobileMenuItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-page') === page) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Update current page
+            currentState.currentPage = page;
+        }
+        
+        // Navigate to different pages
+        function navigateTo(page) {
+            // Hide all pages
+            Object.values(elements.pages).forEach(p => {
+                if (p) p.style.display = 'none';
+            });
+            
+            // Show the selected page
+            switch (page) {
+                case 'dashboard':
+                    elements.pages.dashboard.style.display = 'block';
+                    renderDashboard();
+                    break;
+                case 'customers':
+                    elements.pages.customers.style.display = 'block';
+                    renderCustomersTable();
+                    break;
+                case 'transactions':
+                    elements.pages.transactions.style.display = 'block';
+                    renderTransactionsTable();
+                    break;
+                case 'history':
+                    elements.pages.history.style.display = 'block';
+                    renderHistoryPage();
+                    break;
+                case 'add-customer':
+                    elements.pages.addCustomer.style.display = 'block';
+                    resetCustomerForm();
+                    break;
+                case 'add-transaction':
+                    elements.pages.addTransaction.style.display = 'block';
+                    resetTransactionForm();
+                    populateCustomerDropdown(elements.transactionCustomer);
+                    break;
+                case 'settings':
+                    elements.pages.settings.style.display = 'block';
+                    break;
+                default:
+                    elements.pages.dashboard.style.display = 'block';
+                    renderDashboard();
+            }
+        }
+        
+        // Render dashboard
+        function renderDashboard() {
+            renderCustomerCards();
+            renderRecentActivity();
+            
+            // Animate cards
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('show');
+                    }, index * 100);
+                });
+            }, 100);
+        }
+        
+        // Render customer cards
+        function renderCustomerCards() {
+            elements.customersGrid.innerHTML = '';
+            
+            // Show only the first 4 customers on dashboard
+            const customersToShow = appData.customers.slice(0, 4);
+            
+            if (customersToShow.length === 0) {
+                elements.customersGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>No Customers Found</h3>
+                        <p>Add your first customer to get started</p>
+                        <button class="btn btn-primary" id="addCustomerFromEmpty">Add Customer</button>
+                    </div>
+                `;
+                
+                document.getElementById('addCustomerFromEmpty').addEventListener('click', () => {
+                    navigateTo('add-customer');
+                    updateActiveMenuItem('add-customer');
+                });
+                return;
+            }
+            
+            customersToShow.forEach(customer => {
+                const transactions = appData.transactions.filter(t => t.customerId === customer.id);
+                const totalOrders = transactions.length;
+                const totalSpent = transactions.reduce((sum, t) => sum + t.amount, 0);
+                
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header"></div>
+                    <div class="card-avatar">
+                        <img src="${customer.avatar || 'https://via.placeholder.com/150'}" alt="${customer.name}">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">${customer.name}</h3>
+                        <p class="card-subtitle">${customer.type} Customer</p>
+                        <div class="card-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> ${customer.address ? customer.address.split(',')[0] : 'N/A'}</span>
+                            <span><i class="fas fa-shopping-cart"></i> ${totalOrders} orders</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" data-action="message" data-id="${customer.id}">
+                                <i class="fas fa-comment"></i> Message
+                            </button>
+                            <button class="btn btn-secondary" data-action="profile" data-id="${customer.id}">
+                                <i class="fas fa-user"></i> Profile
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                elements.customersGrid.appendChild(card);
+            });
+            
+            // Add event listeners to card buttons
+            document.querySelectorAll('[data-action="message"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const customerId = btn.getAttribute('data-id');
+                    // In a real app, this would open a messaging interface
+                    alert(`Messaging feature would open for customer ${customerId}`);
+                });
+            });
+            
+            document.querySelectorAll('[data-action="profile"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const customerId = btn.getAttribute('data-id');
+                    viewCustomerHistory(customerId);
+                });
+            });
+        }
+        
+        // Render recent activity
+        function renderRecentActivity() {
+            elements.recentActivity.innerHTML = '<h3>Recent Activity</h3>';
+            
+            // Show only the first 3 activities
+            const activitiesToShow = appData.activities.slice(0, 3);
+            
+            if (activitiesToShow.length === 0) {
+                elements.recentActivity.innerHTML += `
+                    <div class="empty-state" style="padding: 1rem; margin-top: 1rem;">
+                        <i class="fas fa-bell"></i>
+                        <p>No recent activity</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            activitiesToShow.forEach(activity => {
+                const customer = appData.customers.find(c => c.id === activity.customerId);
+                if (!customer) return;
+                
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.innerHTML = `
+                    <div class="activity-avatar">
+                        <img src="${customer.avatar || 'https://via.placeholder.com/150'}" alt="${customer.name}">
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-user">${customer.name}</span>
+                            <span class="activity-time">${formatDate(activity.date)}</span>
+                        </div>
+                        <p class="activity-text">${activity.message}</p>
+                        <div class="activity-actions">
+                            <span><i class="far fa-thumbs-up"></i> Like</span>
+                            <span><i class="far fa-comment"></i> Comment</span>
+                            <span><i class="fas fa-share"></i> Share</span>
+                        </div>
+                    </div>
+                `;
+                
+                elements.recentActivity.appendChild(activityItem);
+            });
+        }
+        
+        // Render customers table
+        function renderCustomersTable() {
+            elements.customersTable.innerHTML = '';
+            
+            if (appData.customers.length === 0) {
+                elements.customersTable.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">
+                            <div class="empty-state" style="padding: 1rem;">
+                                <i class="fas fa-user-friends"></i>
+                                <h3>No Customers Found</h3>
+                                <p>Add your first customer to get started</p>
+                                <button class="btn btn-primary" id="addCustomerFromTable">Add Customer</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                
+                document.getElementById('addCustomerFromTable').addEventListener('click', () => {
+                    navigateTo('add-customer');
+                    updateActiveMenuItem('add-customer');
+                });
+                return;
+            }
+            
+            appData.customers.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <img src="${customer.avatar || 'https://via.placeholder.com/150'}" alt="${customer.name}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                            ${customer.name}
+                        </div>
+                    </td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.type}</td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" data-action="edit" data-id="${customer.id}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-danger" data-action="delete" data-id="${customer.id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                elements.customersTable.appendChild(row);
+            });
+            
+            // Add event listeners to table buttons
+            document.querySelectorAll('[data-action="edit"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const customerId = btn.getAttribute('data-id');
+                    editCustomer(customerId);
+                });
+            });
+            
+            document.querySelectorAll('[data-action="delete"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const customerId = btn.getAttribute('data-id');
+                    confirmDeleteCustomer(customerId);
+                });
+            });
+        }
+        
+        // Render transactions table
+        function renderTransactionsTable() {
+            elements.transactionsTable.innerHTML = '';
+            
+            if (appData.transactions.length === 0) {
+                elements.transactionsTable.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem;">
+                            <div class="empty-state" style="padding: 1rem;">
+                                <i class="fas fa-exchange-alt"></i>
+                                <h3>No Transactions Found</h3>
+                                <p>Add your first transaction to get started</p>
+                                <button class="btn btn-primary" id="addTransactionFromTable">Add Transaction</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                
+                document.getElementById('addTransactionFromTable').addEventListener('click', () => {
+                    navigateTo('add-transaction');
+                    updateActiveMenuItem('add-transaction');
+                });
+                return;
+            }
+            
+            appData.transactions.forEach(transaction => {
+                const customer = appData.customers.find(c => c.id === transaction.customerId);
+                const customerName = customer ? customer.name : 'Unknown Customer';
+                
+                let statusClass = '';
+                if (transaction.status === 'Pending') statusClass = 'status-pending';
+                if (transaction.status === 'Completed') statusClass = 'status-completed';
+                if (transaction.status === 'Failed') statusClass = 'status-failed';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${transaction.id.slice(-6)}</td>
+                    <td>${customerName}</td>
+                    <td>$${transaction.amount.toFixed(2)}</td>
+                    <td>${formatDate(transaction.date)}</td>
+                    <td><span class="${statusClass}">${transaction.status}</span></td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" data-action="edit-transaction" data-id="${transaction.id}">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-danger" data-action="delete-transaction" data-id="${transaction.id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                elements.transactionsTable.appendChild(row);
+            });
+            
+            // Add event listeners to table buttons
+            document.querySelectorAll('[data-action="edit-transaction"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const transactionId = btn.getAttribute('data-id');
+                    editTransaction(transactionId);
+                });
+            });
+            
+            document.querySelectorAll('[data-action="delete-transaction"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const transactionId = btn.getAttribute('data-id');
+                    confirmDeleteTransaction(transactionId);
+                });
+            });
+        }
+        
+        // Render history page
+        function renderHistoryPage() {
+            elements.historyContent.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-history"></i>
+                    <h3>Customer History</h3>
+                    <p>Select a customer to view their complete history</p>
+                    <button class="btn btn-primary" id="viewCustomersForHistory">View Customers</button>
+                </div>
+            `;
+            
+            document.getElementById('viewCustomersForHistory').addEventListener('click', () => {
+                navigateTo('customers');
+                updateActiveMenuItem('customers');
+            });
+        }
+        
+        // View customer history
+        function viewCustomerHistory(customerId) {
+            const customer = appData.customers.find(c => c.id === customerId);
+            if (!customer) return;
+            
+            currentState.viewingCustomerId = customerId;
+            
+            // Filter activities for this customer
+            const customerActivities = appData.activities.filter(a => a.customerId === customerId);
+            
+            // Filter transactions for this customer
+            const customerTransactions = appData.transactions.filter(t => t.customerId === customerId);
+            
+            // Create history content
+            let historyHTML = `
+                <div style="margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <img src="${customer.avatar || 'https://via.placeholder.com/150'}" alt="${customer.name}" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <h3>${customer.name}</h3>
+                            <p>${customer.type} Customer</p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: var(--shadow);">
+                            <h4 style="margin-bottom: 0.5rem;">Contact Info</h4>
+                            <p><i class="fas fa-envelope"></i> ${customer.email}</p>
+                            <p><i class="fas fa-phone"></i> ${customer.phone}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> ${customer.address || 'N/A'}</p>
+                        </div>
+                        
+                        <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: var(--shadow);">
+                            <h4 style="margin-bottom: 0.5rem;">Transaction Summary</h4>
+                            <p>Total Transactions: ${customerTransactions.length}</p>
+                            <p>Total Spent: $${customerTransactions.reduce((sum, t) => sum + t.amount, 0).toFixed(2)}</p>
+                            <p>Last Transaction: ${customerTransactions.length > 0 ? formatDate(customerTransactions[0].date) : 'N/A'}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 1rem;">Recent Activity</h3>
+            `;
+            
+            if (customerActivities.length === 0) {
+                historyHTML += `
+                    <div class="empty-state" style="padding: 1rem;">
+                        <i class="fas fa-bell"></i>
+                        <p>No activity found for this customer</p>
+                    </div>
+                `;
+            } else {
+                customerActivities.forEach(activity => {
+                    historyHTML += `
+                        <div class="activity-item">
+                            <div class="activity-avatar">
+                                <img src="${customer.avatar || 'https://via.placeholder.com/150'}" alt="${customer.name}">
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-header">
+                                    <span class="activity-time">${formatDate(activity.date)}</span>
+                                </div>
+                                <p class="activity-text">${activity.message}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Add transactions section
+            historyHTML += `
+                <h3 style="margin: 2rem 0 1rem;">Transaction History</h3>
+            `;
+            
+            if (customerTransactions.length === 0) {
+                historyHTML += `
+                    <div class="empty-state" style="padding: 1rem;">
+                        <i class="fas fa-exchange-alt"></i>
+                        <p>No transactions found for this customer</p>
+                    </div>
+                `;
+            } else {
+                historyHTML += `
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                customerTransactions.forEach(transaction => {
+                    let statusClass = '';
+                    if (transaction.status === 'Pending') statusClass = 'status-pending';
+                    if (transaction.status === 'Completed') statusClass = 'status-completed';
+                    if (transaction.status === 'Failed') statusClass = 'status-failed';
+                    
+                    historyHTML += `
+                        <tr>
+                            <td>${transaction.id.slice(-6)}</td>
+                            <td>$${transaction.amount.toFixed(2)}</td>
+                            <td>${formatDate(transaction.date)}</td>
+                            <td><span class="${statusClass}">${transaction.status}</span></td>
+                            <td>${transaction.details || 'N/A'}</td>
+                        </tr>
+                    `;
+                });
+                
+                historyHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+            
+            // Set the modal content and show it
+            document.getElementById('historyModalContent').innerHTML = historyHTML;
+            elements.viewHistoryModal.classList.add('active');
+        }
+        
+        // Populate customer dropdown
+        function populateCustomerDropdown(dropdown) {
+            dropdown.innerHTML = '<option value="">Select Customer</option>';
+            
+            appData.customers.forEach(customer => {
+                const option = document.createElement('option');
+                option.value = customer.id;
+                option.textContent = customer.name;
+                dropdown.appendChild(option);
+            });
+        }
+        
+        // Reset customer form
+        function resetCustomerForm() {
+            elements.customerForm.reset();
+            elements.customerAvatar.value = '';
+        }
+        
+        // Reset transaction form
+        function resetTransactionForm() {
+            elements.transactionForm.reset();
+            elements.transactionDate.value = new Date().toISOString().split('T')[0];
+        }
+        
+        // Handle add customer
+        function handleAddCustomer(e) {
+            e.preventDefault();
+            
+            const newCustomer = {
+                id: generateId(),
+                name: elements.customerName.value,
+                email: elements.customerEmail.value,
+                phone: elements.customerPhone.value,
+                address: elements.customerAddress.value,
+                type: elements.customerType.value,
+                avatar: elements.customerAvatar.value || `https://ui-avatars.com/api/?name=${encodeURIComponent(elements.customerName.value)}&background=random`,
+                joinDate: new Date().toISOString()
+            };
+            
+            appData.customers.push(newCustomer);
+            
+            // Add activity
+            appData.activities.unshift({
+                id: generateId(),
+                customerId: newCustomer.id,
+                type: "new_customer",
+                message: `${newCustomer.name} joined as a ${newCustomer.type} customer`,
+                date: new Date().toISOString()
+            });
+            
+            saveData();
+            navigateTo('customers');
+            updateActiveMenuItem('customers');
+        }
+        
+        // Handle add transaction
+        function handleAddTransaction(e) {
+            e.preventDefault();
+            
+            const newTransaction = {
+                id: generateId(),
+                customerId: elements.transactionCustomer.value,
+                amount: parseFloat(elements.transactionAmount.value),
+                date: elements.transactionDate.value,
+                status: elements.transactionStatus.value,
+                details: elements.transactionDetails.value
+            };
+            
+            appData.transactions.push(newTransaction);
+            
+            // Add activity
+            const customer = appData.customers.find(c => c.id === newTransaction.customerId);
+            if (customer) {
+                appData.activities.unshift({
+                    id: generateId(),
+                    customerId: customer.id,
+                    type: "new_transaction",
+                    message: `${customer.name} made a ${newTransaction.status.toLowerCase()} transaction of $${newTransaction.amount.toFixed(2)}`,
+                    date: new Date().toISOString()
+                });
+            }
+            
+            saveData();
+            navigateTo('transactions');
+            updateActiveMenuItem('transactions');
+        }
+        
+        // Edit customer
+        function editCustomer(customerId) {
+            const customer = appData.customers.find(c => c.id === customerId);
+            if (!customer) return;
+            
+            currentState.editingCustomerId = customerId;
+            
+            // Populate form
+            document.getElementById('editCustomerId').value = customer.id;
+            document.getElementById('editCustomerName').value = customer.name;
+            document.getElementById('editCustomerEmail').value = customer.email;
+            document.getElementById('editCustomerPhone').value = customer.phone;
+            document.getElementById('editCustomerAddress').value = customer.address || '';
+            document.getElementById('editCustomerType').value = customer.type;
+            document.getElementById('editCustomerAvatar').value = customer.avatar || '';
+            
+            // Show modal
+            elements.editCustomerModal.classList.add('active');
+        }
+        
+        // Handle save customer changes
+        function handleSaveCustomerChanges() {
+            const customerId = document.getElementById('editCustomerId').value;
+            const customerIndex = appData.customers.findIndex(c => c.id === customerId);
+            
+            if (customerIndex === -1) return;
+            
+            // Update customer
+            appData.customers[customerIndex] = {
+                ...appData.customers[customerIndex],
+                name: document.getElementById('editCustomerName').value,
+                email: document.getElementById('editCustomerEmail').value,
+                phone: document.getElementById('editCustomerPhone').value,
+                address: document.getElementById('editCustomerAddress').value,
+                type: document.getElementById('editCustomerType').value,
+                avatar: document.getElementById('editCustomerAvatar').value || appData.customers[customerIndex].avatar
+            };
+            
+            // Add activity
+            appData.activities.unshift({
+                id: generateId(),
+                customerId: customerId,
+                type: "updated_profile",
+                message: `${appData.customers[customerIndex].name} updated their profile information`,
+                date: new Date().toISOString()
+            });
+            
+            saveData();
+            elements.editCustomerModal.classList.remove('active');
+            
+            // Refresh views
+            if (elements.pages.dashboard.style.display !== 'none') renderDashboard();
+            if (elements.pages.customers.style.display !== 'none') renderCustomersTable();
+        }
+        
+        // Confirm delete customer
+        function confirmDeleteCustomer(customerId) {
+            if (confirm('Are you sure you want to delete this customer? This will also delete all their transactions.')) {
+                handleDeleteCustomer(customerId);
+            }
+        }
+        
+        // Handle delete customer
+        function handleDeleteCustomer() {
+            const customerId = document.getElementById('editCustomerId').value;
+            const customerIndex = appData.customers.findIndex(c => c.id === customerId);
+            
+            if (customerIndex === -1) return;
+            
+            const customerName = appData.customers[customerIndex].name;
+            
+            // Remove customer
+            appData.customers.splice(customerIndex, 1);
+            
+            // Remove related transactions
+            appData.transactions = appData.transactions.filter(t => t.customerId !== customerId);
+            
+            // Add activity
+            appData.activities.unshift({
+                id: generateId(),
+                type: "deleted_customer",
+                message: `Customer ${customerName} was deleted`,
+                date: new Date().toISOString()
+            });
+            
+            saveData();
+            elements.editCustomerModal.classList.remove('active');
+            
+            // Refresh views
+            if (elements.pages.dashboard.style.display !== 'none') renderDashboard();
+            if (elements.pages.customers.style.display !== 'none') renderCustomersTable();
+            if (elements.pages.transactions.style.display !== 'none') renderTransactionsTable();
+        }
+        
+        // Edit transaction
+        function editTransaction(transactionId) {
+            const transaction = appData.transactions.find(t => t.id === transactionId);
+            if (!transaction) return;
+            
+            currentState.editingTransactionId = transactionId;
+            
+            // Populate form
+            document.getElementById('editTransactionId').value = transaction.id;
+            document.getElementById('editTransactionAmount').value = transaction.amount;
+            document.getElementById('editTransactionDate').value = transaction.date.split('T')[0];
+            document.getElementById('editTransactionStatus').value = transaction.status;
+            document.getElementById('editTransactionDetails').value = transaction.details || '';
+            
+            // Populate customer dropdown
+            const customerDropdown = document.getElementById('editTransactionCustomer');
+            customerDropdown.innerHTML = '';
+            
+            appData.customers.forEach(customer => {
+                const option = document.createElement('option');
+                option.value = customer.id;
+                option.textContent = customer.name;
+                option.selected = customer.id === transaction.customerId;
+                customerDropdown.appendChild(option);
+            });
+            
+            // Show modal
+            elements.editTransactionModal.classList.add('active');
+        }
+        
+        // Handle save transaction changes
+        function handleSaveTransactionChanges() {
+            const transactionId = document.getElementById('editTransactionId').value;
+            const transactionIndex = appData.transactions.findIndex(t => t.id === transactionId);
+            
+            if (transactionIndex === -1) return;
+            
+            // Update transaction
+            appData.transactions[transactionIndex] = {
+                ...appData.transactions[transactionIndex],
+                customerId: document.getElementById('editTransactionCustomer').value,
+                amount: parseFloat(document.getElementById('editTransactionAmount').value),
+                date: document.getElementById('editTransactionDate').value,
+                status: document.getElementById('editTransactionStatus').value,
+                details: document.getElementById('editTransactionDetails').value
+            };
+            
+            // Add activity
+            const customer = appData.customers.find(c => c.id === appData.transactions[transactionIndex].customerId);
+            if (customer) {
+                appData.activities.unshift({
+                    id: generateId(),
+                    customerId: customer.id,
+                    type: "updated_transaction",
+                    message: `Transaction #${transactionId.slice(-6)} was updated`,
+                    date: new Date().toISOString()
+                });
+            }
+            
+            saveData();
+            elements.editTransactionModal.classList.remove('active');
+            
+            // Refresh views
+            if (elements.pages.dashboard.style.display !== 'none') renderDashboard();
+            if (elements.pages.transactions.style.display !== 'none') renderTransactionsTable();
+        }
+        
+        // Confirm delete transaction
+        function confirmDeleteTransaction(transactionId) {
+            if (confirm('Are you sure you want to delete this transaction?')) {
+                handleDeleteTransaction(transactionId);
+            }
+        }
+        
+        // Handle delete transaction
+        function handleDeleteTransaction() {
+            const transactionId = document.getElementById('editTransactionId').value;
+            const transactionIndex = appData.transactions.findIndex(t => t.id === transactionId);
+            
+            if (transactionIndex === -1) return;
+            
+            const transaction = appData.transactions[transactionIndex];
+            const customer = appData.customers.find(c => c.id === transaction.customerId);
+            
+            // Remove transaction
+            appData.transactions.splice(transactionIndex, 1);
+            
+            // Add activity
+            if (customer) {
+                appData.activities.unshift({
+                    id: generateId(),
+                    customerId: customer.id,
+                    type: "deleted_transaction",
+                    message: `Transaction #${transactionId.slice(-6)} was deleted`,
+                    date: new Date().toISOString()
+                });
+            }
+            
+            saveData();
+            elements.editTransactionModal.classList.remove('active');
+            
+            // Refresh views
+            if (elements.pages.dashboard.style.display !== 'none') renderDashboard();
+            if (elements.pages.transactions.style.display !== 'none') renderTransactionsTable();
+        }
+        
+        // Toggle dark mode
+        function toggleDarkMode() {
+            const isDarkMode = document.body.classList.toggle('dark-mode');
+            
+            if (isDarkMode) {
+                elements.darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                appData.settings.darkMode = true;
+            } else {
+                elements.darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                appData.settings.darkMode = false;
+            }
+            
+            // Update checkbox state
+            if (elements.darkModeCheckbox) {
+                elements.darkModeCheckbox.checked = isDarkMode;
+            }
+            
+            saveData();
+        }
+        
+        // Check dark mode preference
+        function checkDarkMode() {
+            if (appData.settings.darkMode) {
+                document.body.classList.add('dark-mode');
+                elements.darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                if (elements.darkModeCheckbox) {
+                    elements.darkModeCheckbox.checked = true;
+                }
+            }
+        }
+        
+        // Confirm clear data
+        function confirmClearData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                localStorage.removeItem('socialCRMData');
+                location.reload();
+            }
+        }
+        
+        // Export data
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'socialCRM-data.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+        
+        // Import data
+        function importData() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                document.getElementById('importStatus').innerHTML = '<p style="color: var(--accent);">Please select a file first</p>';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Basic validation
+                    if (!importedData.customers || !importedData.transactions || !importedData.activities) {
+                        document.getElementById('importStatus').innerHTML = '<p style="color: var(--accent);">Invalid data format</p>';
+                        return;
+                    }
+                    
+                    // Confirm overwrite
+                    if (!confirm('This will overwrite all current data. Continue?')) {
+                        return;
+                    }
+                    
+                    appData = importedData;
+                    saveData();
+                    
+                    document.getElementById('importStatus').innerHTML = '<p style="color: var(--secondary);">Data imported successfully!</p>';
+                    
+                    setTimeout(() => {
+                        elements.importDataModal.classList.remove('active');
+                        location.reload();
+                    }, 1000);
+                } catch (error) {
+                    document.getElementById('importStatus').innerHTML = '<p style="color: var(--accent);">Error parsing JSON file</p>';
+                    console.error(error);
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        // Handle search
+        function handleSearch() {
+            const searchTerm = elements.searchInput.value.toLowerCase();
+            
+            if (elements.pages.customers.style.display !== 'none') {
+                // Search in customers table
+                const rows = elements.customersTable.querySelectorAll('tr');
+                
+                rows.forEach(row => {
+                    if (row.querySelector('td')) { // Skip header row
+                        const name = row.querySelector('td:first-child').textContent.toLowerCase();
+                        const email = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                        const phone = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                        
+                        if (name.includes(searchTerm) || email.includes(searchTerm) || phone.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            } else if (elements.pages.transactions.style.display !== 'none') {
+                // Search in transactions table
+                const rows = elements.transactionsTable.querySelectorAll('tr');
+                
+                rows.forEach(row => {
+                    if (row.querySelector('td')) { // Skip header row
+                        const customer = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                        const amount = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                        const status = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+                        
+                        if (customer.includes(searchTerm) || amount.includes(searchTerm) || status.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
